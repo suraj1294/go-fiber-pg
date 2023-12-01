@@ -15,7 +15,6 @@ FROM alpine:3
 RUN apk update && apk add ca-certificates && apk upgrade
 COPY --from=build-ui /src/dist/ /client/dist/
 COPY --from=build-go /src/main /bin/main
-COPY --from=build-go /src/.env /bin/.env
 EXPOSE 8080
 
 ENTRYPOINT ["/bin/main"]
