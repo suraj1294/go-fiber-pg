@@ -12,8 +12,6 @@ func (app *Application) RegisterRoutes() *fiber.App {
 
 	api := fiber.New()
 
-	router.Mount("/api", api)
-
 	// Or extend your config for customization
 	// router.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     "*",
@@ -21,6 +19,8 @@ func (app *Application) RegisterRoutes() *fiber.App {
 	// 	AllowMethods:     "GET,POST,PUT,PATCH,DELETE,OPTIONS",
 	// 	AllowCredentials: true,
 	// }))
+
+	router.Mount("/api", api)
 
 	router.Static("/", "./client/dist")
 
@@ -59,9 +59,9 @@ func (app *Application) RegisterRoutes() *fiber.App {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "page not found"})
 	})
 
-	// router.Use(func(c *fiber.Ctx) error {
-	// 	return c.Redirect("/")
-	// })
+	router.Use(func(c *fiber.Ctx) error {
+		return c.Redirect("/")
+	})
 
 	return router
 
