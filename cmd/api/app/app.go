@@ -9,16 +9,16 @@ import (
 var app Application
 
 type Application struct {
-	Router       *fiber.App
-	Dsn          string
-	Port         string
-	AppDB        *repository.PostgresDB
-	Auth         *models.Auth
-	JWTSecrete   string
-	JWTIssuer    string
-	JWTAudience  string
-	CookieDomain string
-	Domain       string
+	Router      *fiber.App
+	Dsn         string
+	Port        string
+	AppDB       *repository.PostgresDB
+	Auth        *models.Auth
+	JWTSecrete  string
+	JWTIssuer   string
+	JWTAudience string
+	//CookieDomain string
+	//Domain string
 }
 
 func GetApplication() *Application {

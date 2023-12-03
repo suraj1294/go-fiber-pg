@@ -10,6 +10,8 @@ func (app *Application) RegisterRoutes() *fiber.App {
 
 	router := fiber.New()
 
+	api := fiber.New()
+
 	// Or extend your config for customization
 	// router.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     "*",
@@ -30,26 +32,34 @@ func (app *Application) RegisterRoutes() *fiber.App {
 	// router.Get("/", func(c *fiber.Ctx) error {
 	// 	return c.JSON(response.NewSuccessResponse("ok"))
 	// })
-	root := router.Group("/api")
+	//root := router.Group("/api")
 
-	root.Get("/", func(c *fiber.Ctx) error {
+	api.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(response.NewSuccessResponse("ok"))
 	})
 
-	movies := root.Group("/movies")
+	movies := api.Group("/movies")
 	// api/movies
 	movies.Get("/", middlewareHandler.CustomMiddleware, moviesHandler.AllMovies)
 	// api/movies/:id
 	movies.Get("/:id", moviesHandler.Movie)
 	// api/users
-	users := root.Group("/users")
+	users := api.Group("/users")
 	users.Get("/", usersHandler.MockUsers)
-	auth := root.Group("/auth")
+	auth := api.Group("/auth")
 	// api/auth/login
 	auth.Post("/login", authHandler.Authenticate)
 	auth.Get("/refresh", authHandler.RefreshToken)
 	auth.Get("/logout", authHandler.Logout)
 	auth.Get("/me", authHandler.AuthProfile)
+
+	api.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "page not found"})
+	})
+
+	router.Use(func(c *fiber.Ctx) error {
+		return c.Redirect("/")
+	})
 
 	return router
 

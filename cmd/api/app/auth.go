@@ -16,7 +16,7 @@ func (app *Application) GetAppAuth() *models.Auth {
 		RefreshExpiry: time.Hour * 24,
 		CookiePath:    "/",
 		CookieName:    "__Session", //"__Host-refresh_token",
-		CookieDomain:  app.CookieDomain,
+		//CookieDomain:  app.CookieDomain,
 	}
 
 }

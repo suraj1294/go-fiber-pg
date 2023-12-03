@@ -1,4 +1,4 @@
-@host=http://localhost:3000/api
+@host=http://localhost:8080/api
 
 ## Health Check
 {{host}}
@@ -21,7 +21,7 @@ Content-Type: application/json
 
 ### refresh token
 GET {{host}}/auth/refresh
-Cookie: __Host-refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDExNzU5NjIsImlhdCI6MTcwMTA4OTU2Miwic3ViIjoiMSJ9.643ga4UkM2GzlxuwsnLtLqo41Sn2cvTKLymSezzwupM
+Cookie: __Session=""
 
 
 ### logout
@@ -31,4 +31,4 @@ GET {{host}}/auth/logout
 
 ###
 GET {{host}}/auth/me
-Cookie: __Session=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDEyNjUyNTcsImlhdCI6MTcwMTI2NDM1NywiaXNzIjoiZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW4gVXNlciIsInN1YiI6IjEiLCJ0eXAiOiJKV1QifQ.8UJ3upTHQS7hM7Z1qPVPaxANBRJRNjWwE1GM2KlKYRo
+Cookie: __Session=""

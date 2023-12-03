@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	App "github.com/suraj1294/go-fiber-pg-auth/cmd/api/app"
+	"github.com/suraj1294/go-fiber-pg-auth/internal/logger"
 )
 
 var defaultPort = "8080"
@@ -17,18 +18,22 @@ func main() {
 
 	app := App.GetApplication()
 
-	//load environment variables
-	mode := os.Getenv("GIN_MODE")
-
-	if mode != "release" {
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("failed to load env", err)
-		}
+	err := godotenv.Load()
+	if err != nil {
+		logger.Error("failed to load .env file")
 	}
 
-	app.Dsn = os.Getenv("DATABASE_URL")
-	app.Port = os.Getenv("PORT")
+	var (
+		dsn        = os.Getenv("DATABASE_URL")
+		port       = os.Getenv("PORT")
+		jwtSecrete = os.Getenv("JWT_SECRETE")
+	)
+
+	//load environment variables
+
+	app.Dsn = dsn
+	app.Port = port
+	app.JWTIssuer = jwtSecrete
 
 	if app.Port == "" {
 		app.Port = defaultPort
@@ -40,15 +45,18 @@ func main() {
 
 	}
 
-	flag.StringVar(&app.JWTSecrete, "jwt-secrete", "verysecret", "signing secrete")
+	if app.JWTSecrete == "" {
+		flag.StringVar(&app.JWTSecrete, "jwt-secrete", "verysecret", "signing secrete")
+	}
+
 	flag.StringVar(&app.JWTIssuer, "jwt-issuer", "example.com", "signing issuer")
 	flag.StringVar(&app.JWTAudience, "jwt-audience", "example.com", "signing audience")
-	flag.StringVar(&app.CookieDomain, "cookie-domain", "localhost", "cookie domain")
-	flag.StringVar(&app.Domain, "domain", "example.com", "domain")
+	//flag.StringVar(&app.CookieDomain, "cookie-domain", "localhost", "cookie domain")
+	//flag.StringVar(&app.Domain, "domain", "example.com", "domain")
 	flag.Parse()
 
 	//try connection DB and initialize DB repo
-	err := app.ConnectToDB()
+	err = app.ConnectToDB()
 
 	if err != nil {
 		log.Fatal("failed to connect to DB")
