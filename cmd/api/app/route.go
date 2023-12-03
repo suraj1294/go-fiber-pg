@@ -12,6 +12,8 @@ func (app *Application) RegisterRoutes() *fiber.App {
 
 	api := fiber.New()
 
+	router.Mount("/api", api)
+
 	// Or extend your config for customization
 	// router.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     "*",
