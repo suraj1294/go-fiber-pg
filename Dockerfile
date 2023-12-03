@@ -5,7 +5,6 @@ COPY /client .
 RUN yarn install
 RUN yarn run build
 
-ENV PORT = 8080 
 
 # Build server
 FROM golang:1.21-alpine AS build-go
