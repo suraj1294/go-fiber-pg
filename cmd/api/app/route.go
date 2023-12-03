@@ -57,9 +57,9 @@ func (app *Application) RegisterRoutes() *fiber.App {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "page not found"})
 	})
 
-	router.Use(func(c *fiber.Ctx) error {
-		return c.Redirect("/")
-	})
+	// router.Use(func(c *fiber.Ctx) error {
+	// 	return c.Redirect("/")
+	// })
 
 	return router
 
