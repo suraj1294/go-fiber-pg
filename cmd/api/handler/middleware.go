@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -41,6 +42,15 @@ func (rh *MiddlewareHandler) VerifyAuth(c *fiber.Ctx) error {
 		})
 
 		if !parsedToken.Valid {
+			return response.UnAuthorizedRequestHandler(c, "unauthorized")
+		}
+
+		expiryTime, _ := parsedToken.Claims.GetExpirationTime()
+
+		fmt.Println(expiryTime.UTC().Unix())
+
+		// Check token expiration time
+		if expiryTime.Unix() < time.Now().Unix() {
 			return response.UnAuthorizedRequestHandler(c, "unauthorized")
 		}
 

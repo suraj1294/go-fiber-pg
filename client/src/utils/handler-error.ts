@@ -12,7 +12,7 @@ export const handlerApiError = (error: unknown): ApiErrorResponse => {
     ...defaultError,
     ...(axios.isAxiosError(error) && {
       ...error?.response?.data,
-      status: error.status,
+      status: error?.response?.status,
     }),
   };
 };

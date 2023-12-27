@@ -13,17 +13,16 @@ import {
 import { Button } from "../ui/button";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/auth/auth-context";
+
 import { logout } from "@/services/auth";
+import { setAuthState } from "@/auth/auth-store";
 
 export function UserNav() {
   const navigate = useNavigate();
 
-  const { logout: logoutAuth } = useAuth();
-
   const { mutate } = useMutation("logout", logout, {
     onSuccess: () => {
-      logoutAuth?.();
+      setAuthState({ token: "" });
       navigate("/login");
     },
   });

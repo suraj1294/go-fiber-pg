@@ -45,3 +45,15 @@ export const logout = async () => {
     return Promise.reject(handlerApiError(error));
   }
 };
+
+export const refreshToken = async () => {
+  try {
+    const { data } = await axiosClient.get<AuthUserApiResponse>(
+      "/auth/refresh"
+    );
+
+    return Promise.resolve(data?.response);
+  } catch (error) {
+    return Promise.reject(handlerApiError(error));
+  }
+};

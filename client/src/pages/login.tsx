@@ -12,13 +12,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation, useQuery } from "react-query";
-import { login as loginUser, me } from "@/services/auth";
+import { useMutation } from "react-query";
+import { login as loginUser } from "@/services/auth";
 import { AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { ApiErrorResponse } from "@/models/api-response";
-import { useAuth } from "@/auth/auth-context";
 import { Navigate } from "react-router-dom";
+import { setAuthState } from "@/auth/auth-store";
+import { useAuthStore } from "@/auth";
+import { useStore } from "zustand";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -34,23 +36,15 @@ export function Login({ className, ...props }: UserAuthFormProps) {
     formState: { errors },
   } = useForm<AuthForm>();
 
-  const { login, token } = useAuth();
-
-  console.log("ok");
-
-  const { isLoading: isLoadingUser } = useQuery("getUser", me, {
-    onSuccess: (data) => {
-      login?.(data?.accessToken ?? "");
-    },
-    retry: 0,
-  });
+  const store = useAuthStore();
+  const token = useStore(store, (state) => state.token);
 
   const { mutate, isLoading, isError, error } = useMutation(loginUser, {
     onError: (e: ApiErrorResponse) => {
       console.error(e);
     },
     onSuccess: (data) => {
-      login?.(data?.accessToken ?? "");
+      setAuthState?.({ token: data?.accessToken ?? "" });
     },
   });
 
@@ -58,12 +52,6 @@ export function Login({ className, ...props }: UserAuthFormProps) {
     const { email, password } = data;
     mutate({ email, password });
   };
-
-  console.log(token);
-
-  if (isLoadingUser) {
-    return <></>;
-  }
 
   if (token) {
     return <Navigate to="/" />;

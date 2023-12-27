@@ -22,7 +22,7 @@ func (app *Application) RegisterRoutes() *fiber.App {
 
 	router.Mount("/api", api)
 
-	router.Static("/", "./client/dist")
+	router.Static("/", "client/dist")
 
 	appStore := handler.GetAppHandler(*app.Auth, *app.AppDB)
 
@@ -37,14 +37,14 @@ func (app *Application) RegisterRoutes() *fiber.App {
 	//root := router.Group("/api")
 
 	api.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(response.NewSuccessResponse("ok"))
+		return c.JSON(response.NewSuccessResponse("ok!"))
 	})
 
 	movies := api.Group("/movies")
 	// api/movies
-	movies.Get("/", middlewareHandler.CustomMiddleware, moviesHandler.AllMovies)
+	movies.Get("/", middlewareHandler.VerifyAuth, moviesHandler.AllMovies)
 	// api/movies/:id
-	movies.Get("/:id", moviesHandler.Movie)
+	movies.Get("/:id", middlewareHandler.VerifyAuth, moviesHandler.Movie)
 	// api/users
 	users := api.Group("/users")
 	users.Get("/", usersHandler.MockUsers)
@@ -53,14 +53,15 @@ func (app *Application) RegisterRoutes() *fiber.App {
 	auth.Post("/login", authHandler.Authenticate)
 	auth.Get("/refresh", authHandler.RefreshToken)
 	auth.Get("/logout", authHandler.Logout)
-	auth.Get("/me", authHandler.AuthProfile)
+	auth.Get("/me", middlewareHandler.VerifyAuth, authHandler.AuthProfile)
 
 	api.Use(func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "page not found"})
 	})
 
 	router.Use(func(c *fiber.Ctx) error {
-		return c.Redirect("/")
+
+		return c.SendFile("client/dist/index.html")
 	})
 
 	return router

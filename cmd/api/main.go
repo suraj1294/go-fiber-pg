@@ -59,6 +59,7 @@ func main() {
 	err = app.ConnectToDB()
 
 	if err != nil {
+		fmt.Println(err)
 		log.Fatal("failed to connect to DB")
 	}
 

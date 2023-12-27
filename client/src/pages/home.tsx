@@ -1,6 +1,7 @@
 import { UserNav } from "@/components/header/user-menu";
 import { MainNav } from "@/components/main-nav";
 import { Search } from "@/components/search";
+import { Button } from "@/components/ui/button";
 import { getMovies } from "@/services/movies";
 import { FC } from "react";
 import { useQuery } from "react-query";
@@ -17,6 +18,7 @@ const Home: FC = () => {
         <div className="ml-auto flex items-center space-x-4">
           <Search />
           <UserNav />
+          <Button onClick={() => response.refetch()}>Refetch</Button>
         </div>
       </div>
     </div>

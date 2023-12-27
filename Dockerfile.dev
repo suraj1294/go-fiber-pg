@@ -1,0 +1,21 @@
+FROM golang:1.21-alpine as dev
+
+WORKDIR /app
+RUN go install github.com/cosmtrek/air@latest
+COPY go.mod go.sum ./
+RUN go mod download
+CMD ["air", "-c", ".air.toml"]
+
+
+FROM node:21-bullseye-slim AS ui
+WORKDIR /src
+COPY /client/package.json /client/yarn.lock ./
+RUN yarn install
+COPY ./client ./
+RUN ls
+
+
+FROM oven/bun:1 as bun-ui
+WORKDIR /src
+COPY /client/package.json /client/bun.lockb ./
+RUN bun install --frozen-lockfile

@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: .
+      # Correct the path to your Dockerfile
+      dockerfile: Dockerfile.dev
+      target: dev
+    ports:
+      - 8080:8080
+    # Important to bind/mount your codebase dir to /app dir for live reload
+    volumes:
+      - ./:/app
+      - /app/client
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/movies?sslmode=disable
+    depends_on:
+      - db
+  ui:
+    build:
+      context: .
+      # Correct the path to your Dockerfile
+      dockerfile: Dockerfile.dev
+      target: ui
+    ports:
+      - 3000:3000
+    # Important to bind/mount your codebase dir to /app dir for live reload
+    volumes:
+      - ./client:/src
+      - /src/node_modules
+    command: ["yarn", "run", "dev"]
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/movies?sslmode=disable
+      VITE_API_URL: http://web:8080/api
+    depends_on:
+      - web
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: movies
+    ports:
+      - 5432:5432
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+volumes:
+  postgres-data:
